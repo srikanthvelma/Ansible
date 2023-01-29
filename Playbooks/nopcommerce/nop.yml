@@ -6,13 +6,33 @@
     - name: install MS keys and packages
       apt:
         deb: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
-    - name:
+    - name: install aspdotnet
       apt:
         name:
           - apt-transport-https
           - aspnetcore-runtime-7.0
         update_cache: yes
         state: present
-          
-    
-      
+    - name: set a password for root accounts
+      community.mysql.mysql_user:
+        login_host: localhost
+        login_user: root
+        login_password: ''
+        name: root
+        password: admin123
+        state: present
+    - name: remove anonymus users
+      community.mysql.mysql_user:
+        name: ''
+        host: localhost
+        state: absent
+    - name: remove root users
+      community.mysql.mysql_user:
+        name: root
+        host: localhost
+        state: absent
+    - name: remove test db
+      community.mysql.mysql_db:
+        name: test
+        state: absent
+        

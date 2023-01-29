@@ -1,0 +1,31 @@
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt-get update
+sudo apt-get install -y apt-transport-https aspnetcore-runtime-7.0
+dotnet --list-runtimes # to verify
+sudo apt-get install mysql-server
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'SetRootPasswordHere';exit
+sudo /usr/bin/mysql_secure_installation
+
+####    mysql_secure_installation steps
+        -------------------------------
+     1. set a password for root accounts
+       in the third task, the login_host, login_user, and login_password options of the mysql_user Ansible module are used to set the current MySQL login hostname,
+        username, and password, respectively. By default, the MySQL login hostname (login_host) is localhost, 
+       the login username (login_user) is root, and the login password (login_password) is empty (”) on the system.
+             - name: set a password for root accounts
+               community.mysql.mysql_user:
+                 login_host: localhost
+                 login_user: root
+                 login_password: ''
+                 name: root
+                 password: admin123
+                 state: present
+            
+     2. remove root accounts that are accessible from outside the local host
+
+     3. remove anonymous-user accounts
+          
+     4. remove the test database, which by default can be accessed by anonymous users
+                          
