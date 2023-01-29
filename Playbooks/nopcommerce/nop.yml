@@ -30,6 +30,8 @@
       community.mysql.mysql_user:
         name: ''
         host: localhost
+        login_user: root
+        login_password: admin123
         state: absent
     - name: remove root users
       community.mysql.mysql_user:
