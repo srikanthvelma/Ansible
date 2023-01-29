@@ -20,7 +20,7 @@
         state: present
     - name: install mysql server
       apt:
-        name: mysql_server
+        name: mysql-server
         state: present    
     - name: set a password for root accounts
       community.mysql.mysql_user:
