@@ -26,6 +26,7 @@
         name: root
         password: admin123
         state: present
+      when: mysql_login_password == ''  
     - name: remove anonymus users
       community.mysql.mysql_user:
         name: ''
