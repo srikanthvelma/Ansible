@@ -1,0 +1,24 @@
+---
+- name: installing mysql and php-mysql in ubuntu
+  hosts: all
+  become: yes
+  vars:
+    package:
+      - mysql-server
+      - php
+      - php-mysql
+  tasks:
+    - name: install mysql and php-mysql
+      apt: 
+        name: "{{ package }}"
+        update_cache: yes
+        state: present
+      notify: 
+        - start service
+  handlers:
+    - name: start service
+      systemd:
+        name: mysql.service
+        state: present
+      
+       

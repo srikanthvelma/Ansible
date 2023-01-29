@@ -1,0 +1,11 @@
+---
+- name: fail for unsupported environmets
+  fail:
+    msg: Supported Platforms are ubuntu & rhel
+  when: ansible_os_family != "RedHat" || ansible_os_family != "Debian"
+- name: install tomcat in ubuntu
+  include_tasks: tomcat8_ubuntu.yml
+  when: ansible_os_family == "Debian"
+- name: install tomcat in Redhat
+  include_tasks: tomcat8_redhat.yml
+  when: ansible_os_family == "RedHat"

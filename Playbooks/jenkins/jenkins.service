@@ -1,0 +1,10 @@
+[Unit]
+Description=Manage Java service jenkins
+
+[Service]
+Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64"
+WorkingDirectory=/home/devops
+ExecStart=java -jar jenkins.war
+Type=simple
+Restart=on-failure
+RestartSec=10

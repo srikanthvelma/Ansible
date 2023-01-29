@@ -1,0 +1,6 @@
+---
+- name: installing mongo db
+  hosts: localhost
+  roles:
+    - role: undergreen.mongodb
+      become: yes

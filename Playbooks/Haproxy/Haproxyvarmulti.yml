@@ -1,0 +1,48 @@
+---
+- name: installing Haproxy on ubuntu
+  hosts: haproxy
+  become: yes
+  tasks:
+    - name: install Haproxy
+      package:
+        name: "{{ haproxy_package_name }}"
+        state: present
+    - name: backup config files
+      copy:
+        src: /etc/haproxy/haproxy.cfg
+        dest: /etc/haproxy/haproxy.cfg.bk
+        remote_src: yes
+    - name: modify config files
+      copy:
+        src: ~/haproxy/haproxy.cfg
+        dest: /etc/haproxy/haproxy.cfg
+    - name: restart haproxy
+      systemd: 
+        name: haproxy
+        state: restarted
+
+- name: configure backend servers
+  hosts: servers
+  become: yes
+  tasks:
+    - name: config listening port on backend servers
+      copy:
+        src: ~/haproxy/ports.conf
+        dest: /etc/apache2/ports.conf
+    - name: restart apache servers
+      systemd:
+        name: apache2
+        state: restarted
+    - name: remove default index files
+      file:
+        path: /var/www/html/index.html
+        state: absent
+    - name: create web content on backend servers
+      copy:
+        src: "{{ item_src }}"
+        dest: "{{ item_dest }}"
+    
+
+
+
+

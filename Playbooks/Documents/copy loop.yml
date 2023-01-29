@@ -1,0 +1,30 @@
+---
+- name: copy looping test from 1 to mlti dest
+  hosts: local
+  become: yes
+  tasks:
+    - name: copy loop
+      copy:
+        src: mgmt-users.properties
+        dest: "{{ item }}"
+      loop:
+        - copytest1
+        - copytest2
+        - copytest3
+       
+       
+---
+- name: copy looping test from mlti src to multi dest
+  hosts: local
+  become: yes
+  tasks:
+    - name: copy loop
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      loop:
+        - { src: 'copytest1' , dest: '/temp/' }
+        - { src: 'copytest2' , dest: '/temp/' }
+        - { src: 'copytest3' , dest: '/temp/' }       
+       
+        

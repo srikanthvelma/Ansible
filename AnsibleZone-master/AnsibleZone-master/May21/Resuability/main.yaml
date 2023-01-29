@@ -1,0 +1,14 @@
+---
+- name: install utility softwares
+  import_playbook: test1.yaml
+  vars:
+    utility_softwares:
+      - git
+      - wget
+      - tree
+- name: create files
+  include: "{{ filename2 }}.yaml"
+  vars:
+    file_list:
+      - /tmp/1.txt
+      - /tmp/2.txt

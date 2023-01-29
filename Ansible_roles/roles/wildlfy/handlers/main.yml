@@ -1,0 +1,18 @@
+---
+# handlers file for skeleton
+- name: daemon reload and wildfly start
+  systemd:
+    name: "{{ wildfly_service_name }}"
+    daemon_reload: yes
+    enabled: yes
+    state: started
+- name: daemon reload and wildlfy restart
+  systemd:
+    name: "{{ wildfly_service_name }}"
+    daemon_reload: yes
+    state: restarted
+- name: wildfly restart
+  systemd:
+    name: "{{ wildfly_service_name }}"
+    state: restarted 
+

@@ -1,0 +1,13 @@
+[ubuntu]
+172.31.24.180 name=node1
+localhost name=acn group=none
+
+[centos]
+20.121.55.193 name=node2
+
+[webserver]
+20.121.55.193 name=node2
+172.31.24.180 name=node1
+
+[webserver:vars]
+group=webserver

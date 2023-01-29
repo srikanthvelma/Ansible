@@ -1,0 +1,39 @@
+
+sudo apt update
+sudo apt install openjdk-11-jdk
+sudo groupadd -r wildfly
+sudo useradd -r -g wildfly -d /opt/wildfly -s /sbin/nologin wildfly
+cd /tmp
+wget https://github.com/wildfly/wildfly/releases/download/27.0.1.Final/wildfly-27.0.1.Final.tar.gz
+sudo tar -xf /tmp/wildfly-27.0.1.Final.tar.gz
+sudo mv wildfly-27.0.1.Final /opt/wildfly
+sudo chown -RH wildfly: /opt/wildflys
+sudo mkdir -p /etc/wildfly
+sudo cp /opt/wildfly/docs/contrib/scripts/systemd/wildfly.conf /etc/wildfly/
+sudo cp /opt/wildfly/docs/contrib/scripts/systemd/launch.sh /opt/wildfly/bin/
+sudo sh -c 'chmod +x /opt/wildfly/bin/*.sh'
+sudo cp /opt/wildfly/docs/contrib/scripts/systemd/wildfly.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl start wildfly
+sudo systemctl enable wildfly
+sudo systemctl status wildfly
+
+
+
+
+
+
+
+
+
+devops@ip-172-31-33-89:~$ sudo vi wildfly.conf
+devops@ip-172-31-33-89:~$ sudo vi /etc/wildfly/wildfly.conf
+devops@ip-172-31-33-89:~$ sudo vi /opt/wildfly/bin/launch.sh
+devops@ip-172-31-33-89:~$ sudo vi /opt/wildfly/bin/launch.sh
+devops@ip-172-31-33-89:~$ sudo systemctl restart wildfly
+devops@ip-172-31-33-89:~$ sudo vi /etc/systemd/system/wildfly.service
+devops@ip-172-31-33-89:~$ sudo mkdir /var/run/wildfly/
+devops@ip-172-31-33-89:~$ sudo chown wildfly: /var/run/wildfly/
+devops@ip-172-31-33-89:~$ sudo systemctl daemon-reload
+devops@ip-172-31-33-89:~$ sudo systemctl restart wildfly
+devops@ip-172-31-33-89:~$ sudo systemctl status wildfly

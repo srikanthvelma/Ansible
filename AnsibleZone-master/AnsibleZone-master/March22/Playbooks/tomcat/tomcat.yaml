@@ -1,0 +1,124 @@
+---
+- name: Install tomcat 9
+  become: yes
+  hosts: appserver
+  vars:
+    - username: tomcat
+    - home_dir: /opt/tomcat
+    - default_shell: /bin/false
+    - tomcat_version: 9.0.60
+    - tomcat_latest: /opt/tomcat/latest
+    - tomcat_bin_directory: /opt/tomcat/latest/bin/
+    - tomcat_service_location: /etc/systemd/system/tomcat.service
+    - tomcat_admin_user: devops
+    - tomcat_admin_password: devops
+    - tomcat_users_relative: conf/tomcat-users.xml
+    - tomcat_manager_allow_ipregex: ".*"
+    - tomcat_allow_context_locations:
+        - /opt/tomcat/latest/webapps/manager/META-INF/context.xml
+        - /opt/tomcat/latest/webapps/host-manager/META-INF/context.xml
+    - deploy_file_name: jenkins.war
+    - deploy_url: https://mirrors.tuna.tsinghua.edu.cn/jenkins/war-stable/2.332.1/jenkins.war
+  tasks:
+    - name: update apt repo and cache
+      apt:
+        update_cache: yes
+      when: ansible_facts['os_family'] == "Debian"
+    - name: install openjdk 11
+      package:
+        name: "{{ java_package }}"
+        state: present
+    - name: create a tomcat user
+      ansible.builtin.user:
+        create_home: yes
+        home: "{{ home_dir }}"
+        name: "{{ username }}"
+        shell: "{{ default_shell }}"
+        state: present
+    - name: Download tomcat
+      ansible.builtin.get_url:
+        url: "https://dlcdn.apache.org/tomcat/tomcat-9/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    - name: Extract tomcat
+      ansible.builtin.unarchive:
+        src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "{{ home_dir }}"
+        creates: "{{ home_dir }}/apache-tomcat-{{ tomcat_version }}"
+        group: "{{ username }}"
+        owner: "{{ username }}"
+        remote_src: yes 
+    - name: create symlink
+      ansible.builtin.file:
+        src: "{{ home_dir }}/apache-tomcat-{{ tomcat_version }}"
+        dest: "{{ tomcat_latest }}"
+        group: "{{ username }}"
+        owner: "{{ username }}"
+        state: link
+    - name: change ownership to tomcat user
+      ansible.builtin.file:
+        path: "{{ home_dir }}"
+        state: directory
+        recurse: yes
+        group: "{{ username }}"
+        owner: "{{ username }}"
+    - name: find all the .sh files in the tomcat bin directory
+      ansible.builtin.find:
+        paths: "{{ tomcat_bin_directory }}"
+        patterns: "*.sh"
+      register: sh_files_tomcat_bin
+    - name: print the files from the previous
+      debug:
+        var: sh_files_tomcat_bin
+    - name: Make shell scripts executable
+      ansible.builtin.file:
+        path: '{{ item.path }}'
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        mode: '0755'
+      loop: "{{ sh_files_tomcat_bin.files }}"
+    - name: copy the tomcat service file
+      ansible.builtin.template:
+        src: 'tomcat.service.j2'
+        dest: "{{ tomcat_service_location }}"
+        owner: "{{ username }}"
+        group: "{{ username }}"
+      notify:
+        - reload the daemon, enable and start the tomcat service
+    - name: Force all notified handlers to run at this point, not waiting for normal sync points
+      meta: flush_handlers
+    - name: ensure tomcat service is running
+      ansible.builtin.systemd:
+        name: 'tomcat.service'
+        state: 'started'
+    - name: create the tomcat users file
+      ansible.builtin.template:
+        src: 'tomcat-users.xml.j2'
+        dest: "{{ tomcat_latest }}/{{ tomcat_users_relative }}"
+        owner: "{{ username }}"
+        group: "{{ username }}"
+      notify:
+        - reload the daemon, enable and start the tomcat service
+    - name: allow hostmanager and manager from specified ip range
+      ansible.builtin.template:
+        src: 'manager-context.xml.j2'
+        dest: "{{ item }}"
+        owner: "{{ username }}"
+        group: "{{ username }}"
+      loop: "{{ tomcat_allow_context_locations }}"
+      notify:
+        - reload the daemon, enable and start the tomcat service
+    - name: deploy any war file
+      ansible.builtin.get_url:
+        url: "{{ deploy_url }}"
+        dest: "{{ tomcat_latest }}/webapps/{{ deploy_file_name }}"
+        owner: "{{ username }}"
+        group: "{{ username }}"
+      notify:
+        - reload the daemon, enable and start the tomcat service
+  handlers:
+    - name: reload the daemon, enable and start the tomcat service
+      ansible.builtin.systemd:
+        name: 'tomcat.service'
+        daemon_reload: yes
+        enabled: yes
+        state: restarted

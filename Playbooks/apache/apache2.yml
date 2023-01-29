@@ -1,0 +1,25 @@
+---
+- name: install apache2 on ubuntu
+  hosts: all
+  become: yes
+  tasks: 
+    - name: install apache2
+      ansible.builtin.apt:
+        name: apache2
+        update_catche: yes
+        state: present
+
+---
+- name: installing and starting apache in ubuntu
+  hosts: all
+  become: yes
+  tasks:
+    - name: install apache2
+      ansible.builtin.apt: 
+        name: apache2
+        update_cache: yes
+        state: present
+      service:
+        name: apache2
+        state: started
+        

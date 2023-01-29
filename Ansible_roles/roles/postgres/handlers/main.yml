@@ -1,0 +1,6 @@
+---
+# handlers file for skeleton
+- name: start service
+  systemd:
+    name: postgresql.service
+    state: present

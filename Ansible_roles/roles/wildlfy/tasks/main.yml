@@ -1,0 +1,99 @@
+---
+# tasks file for skeleton
+- name: install java
+  package:
+    name: "{{ java_package_name }}"
+    state: present
+- name: create a wildfly group
+  group:
+    name: "{{ group_name }}"
+    system: yes
+    state: present
+- name: create a wildfly user
+  user:
+    name: "{{ user_name }}"
+    create_home: yes
+    group: "{{ group_name }}"
+    system: yes
+    home: "{{ user_home }}"      
+    shell: "{{ user_shell }}"
+    state: present
+- name: create directory
+  file:
+    name: /tmp
+    state: directory
+- name: get wildfly stats
+  stat:
+    path: /opt/wildfly/bin/launch.sh
+  register: wildfly_startup
+- name: extract wildfly 27.0.1
+  unarchive:
+    src: https://github.com/wildfly/wildfly/releases/download/{{ wildfly_version }}/wildfly-{{ wildfly_version }}.tar.gz
+    dest: /tmp
+    remote_src: yes
+  when: not wildfly_startup.stat.exists
+- name: copy tar file to folder
+  copy:
+    src: /tmp/wildfly-{{ wildfly_version }}/
+    dest: "{{ user_home }}"
+    remote_src: yes
+  when: not wildfly_startup.stat.exists
+- name: change permissions
+  file:
+    dest: "{{ user_home }}"
+    recurse: yes
+    owner: "{{ user_name }}"
+    group: "{{ group_name }}"
+    state: directory
+- name: make directory
+  file:
+    name: /etc/wildfly
+    state: directory
+- name: copy config & launch files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    remote_src: yes
+  loop:
+    - { src: '{{ user_home }}/docs/contrib/scripts/systemd/wildfly.conf' , dest: '/etc/wildfly/wildfly.conf' }
+    - { src: '{{ user_home }}/docs/contrib/scripts/systemd/launch.sh' , dest: '{{ user_home }}/bin/launch.sh' }
+- name: add executable permissions for shell files
+  command: sudo sh -c 'chmod +x /opt/wildfly/bin/*.sh'
+  when: not wildfly_startup.stat.exists
+- name: copy systemd unit file
+  copy:
+    src: "{{ user_home }}/docs/contrib/scripts/systemd/wildfly.service"
+    dest: /etc/systemd/system/wildfly.service
+    remote_src: yes
+  notify:
+    - daemon reload and wildfly start
+- name: copy mgmt user & group files to dest1 & dest2
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: 'mgmt-users.properties' , dest: '/opt/wildfly/standalone/configuration/mgmt-users.properties' }
+    - { src: 'mgmt-users.properties' , dest: '/opt/wildfly/domain/configuration/mgmt-users.properties' }
+    - { src: 'mgmt-groups.properties' , dest: '/opt/wildfly/standalone/configuration/mgmt-groups.properties' }
+    - { src: 'mgmt-groups.properties' , dest: '/opt/wildfly/domain/configuration/mgmt-groups.properties' }
+    - { src: 'wildfly.conf' , dest: '/etc/wildfly/wildfly.conf' }
+    - { src: 'launch.sh' , dest: '/opt/wildfly/bin/launch.sh'}
+  notify:
+    - wildfly restart
+- name: copy console service file to dest
+  copy:
+    src: /home/devops/wildfly.service
+    dest: /etc/systemd/system/wildfly.service
+- name: make console run directory
+  file:
+    name: /var/run/wildfly
+    state: directory
+- name: change permissions to console dir
+  file:
+    dest: /var/run/wildfly
+    recurse: yes
+    owner: wildfly
+    group: wildfly
+    state: directory
+  notify:
+    - daemon reload and wildlfy restart

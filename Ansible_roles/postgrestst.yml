@@ -1,0 +1,23 @@
+---
+- name: installing postgres in ubuntu
+  hosts: all
+  become: yes
+  vars:
+    package:
+      - postgresql
+      - postgresql-contrib
+  tasks:
+    - name: install postgres
+      apt: 
+        name: "{{ package }}"
+        update_cache: yes
+        state: present
+      notify: 
+        - start service
+  handlers:
+    - name: start service
+      systemd:
+        name: postgresql.service
+        state: started
+      
+       

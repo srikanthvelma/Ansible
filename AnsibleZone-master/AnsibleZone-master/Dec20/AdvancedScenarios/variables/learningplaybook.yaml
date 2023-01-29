@@ -1,0 +1,11 @@
+---
+- name: understanding inventory parameters
+  become: yes
+  hosts: all
+  tasks:
+    - name: print ansible_host
+      debug:
+        var: ansible_host
+    - name: print other parameters
+      debug:
+        msg: "ansible_port = {{ ansible_port }} ansible_user = {{ ansible_user }}"

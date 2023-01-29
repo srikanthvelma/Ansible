@@ -1,0 +1,10 @@
+---
+- name: installing tomcat10 server on ubuntu
+  hosts: all
+  become: yes
+  tasks:
+  - name: install java
+    apt:
+      name: openjdk-11-jdk
+      update_cache: yes
+      state: present

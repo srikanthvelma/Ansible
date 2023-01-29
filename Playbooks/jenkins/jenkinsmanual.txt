@@ -1,0 +1,9 @@
+sudo apt update
+sudo apt install openjdk-11-jdk
+sudo wget https://updates.jenkins.io/download/war/2.385/jenkins.war
+sudo vi /lib/systemd/system/jenkins.service    # change the service file 
+sudo systemctl start jenkins.service
+sudo systemctl enable jenkins.service
+
+
+

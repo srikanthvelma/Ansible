@@ -1,0 +1,16 @@
+---
+- name: install java
+  hosts: appserver
+  become: yes
+  vars_files:
+    - ./vars/sensitive.yaml
+  tasks:
+    - name: "Install java version {{ java_version }}"
+      apt:
+        name: "{{ java_package_name }}"
+        update_cache: yes
+        state: present
+    - name: "Use username and password"
+      template:
+        src: ./templates/test.j2
+        dest: /home/ansible/.test

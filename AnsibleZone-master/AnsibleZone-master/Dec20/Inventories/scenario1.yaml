@@ -1,0 +1,38 @@
+---
+- name: install utility softwares
+  hosts: all
+  become: yes
+  tasks:
+    - name: install git
+      package:
+        name: git
+        state: present
+    - name: install nano
+      package:
+        name: nano
+        state: present
+    - name: install tree
+      package:
+        name: tree
+        state: present
+- name: install apache on centos
+  hosts: centos
+  become: yes
+  tasks:
+    - name: install apache
+      package:
+        name: httpd
+        state: present
+    - name: ensure apache is running
+      service:
+        name: httpd
+        enabled: yes
+        state: started
+- name: install java on ubuntu
+  hosts: ubuntu
+  become: yes
+  tasks:
+    - name: install java
+      package:
+        name: openjdk-8-jdk
+        state: present

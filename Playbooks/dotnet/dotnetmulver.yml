@@ -1,0 +1,18 @@
+---
+- name: dotnet installation for multi version
+  hosts: all
+  become: yes
+  vars:
+    version: "6.0"
+  tasks:
+    - name: install apt-transport
+      apt:
+        name: apt-transport-https
+        update_cache: yes
+        state: present 
+    - name: install dotnet core
+      apt:
+        name: "dotnet-sdk-{{ version }}"
+        update_cache: yes
+        state: present
+

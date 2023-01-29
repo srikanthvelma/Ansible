@@ -1,0 +1,9 @@
+---
+- name: install tomcat on ubuntu
+  hosts: appserver
+  become: yes
+  roles:
+    - role: tomcat-ubuntu
+    - role: geerlingguy.mysql
+    - role: geerlingguy.memcached
+        

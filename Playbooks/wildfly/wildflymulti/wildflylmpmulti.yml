@@ -1,0 +1,164 @@
+---
+- name: install lamp stack on ubuntu
+  hosts: all
+  become: yes
+  tasks: 
+    - name: install apache2
+      package:
+        name: "{{ apache_package_name }}"
+        state: present
+    - name: install php
+      package:
+        name: "{{ php_package_name }}"
+        state: present
+    - name: install php-mysql
+      package:
+        name: "{{ phpmysql_package_name }}"
+        state: present
+    - name: create a file with content
+      copy:
+        dest: /var/www/html/info.php
+        content:
+          <?php
+           phpinfo()
+          ?>
+
+    - name: restart and enable service
+      systemd:
+        name: "{{ service_name }}"
+        enabled: yes
+        state: restarted
+
+- name: installing wildfly on ubuntu 20.04
+  hosts: all
+  become: yes
+  vars:
+    group_name: wildfly
+    user_name: wildfly
+    user_home: /opt/wildfly
+    user_shell: /sbin/nologin
+    wildfly_version: 27.0.1.Final
+    wildfly_service_name: wildfly.service
+  tasks:
+  - name: install java
+    package:
+      name: "{{ java_package_name }}"
+      update_cache: yes
+      state: present
+  - name: create a wildfly group
+    group:
+      name: "{{ group_name }}"
+      system: yes
+      state: present
+  - name: create a wildfly user
+    user:
+      name: "{{ user_name }}"
+      create_home: yes
+      group: "{{ group_name }}"
+      system: yes
+      home: "{{ user_home }}"      
+      shell: "{{ user_shell }}"
+      state: present
+  - name: create directory
+    file:
+      name: /tmp
+      state: directory
+  - name: get wildfly stats
+    stat:
+      path: /opt/wildfly/bin/launch.sh
+    register: wildfly_startup
+  - name: extract wildfly 27.0.1
+    unarchive:
+      src: "https://github.com/wildfly/wildfly/releases/download/{{ wildfly_version }}/wildfly-{{ wildfly_version }}.tar.gz"
+      dest: /tmp
+      remote_src: yes
+    when: not wildfly_startup.stat.exists
+  - name: copy tar file to folder
+    copy:
+      src: /tmp/wildfly-{{ wildfly_version }}/
+      dest: "{{ user_home }}"
+      remote_src: yes
+    when: not wildfly_startup.stat.exists
+  - name: change permissions
+    file:
+      dest: "{{ user_home }}"
+      recurse: yes
+      owner: "{{ user_name }}"
+      group: "{{ group_name }}"
+      state: directory
+  - name: make directory
+    file:
+      name: /etc/wildfly
+      state: directory
+  - name: copy config files
+    copy:
+      src: "{{ user_home }}/docs/contrib/scripts/systemd/wildfly.conf"
+      dest: /etc/wildfly
+      remote_src: yes
+  - name: copy launch file
+    copy:
+      src: "{{ user_home }}/docs/contrib/scripts/systemd/launch.sh"
+      dest: "{{ user_home }}/bin"
+      remote_src: yes
+  - name: add executable permissions for shell files
+    command: sudo sh -c 'chmod +x /opt/wildfly/bin/*.sh'
+    when: not wildfly_startup.stat.exists
+  - name: copy systemd unit file
+    copy:
+      src: "{{ user_home }}/docs/contrib/scripts/systemd/wildfly.service"
+      dest: /etc/systemd/system/
+      remote_src: yes
+  - name: daemon reload and start wildfly
+    systemd:
+      name: "{{ wildfly_service_name }}"
+      daemon_reload: yes
+      enabled: yes
+      state: started
+  - name: copy mgmt user files to dest1
+    copy:
+      src: mgmt-users.properties
+      dest: /opt/wildfly/standalone/configuration/mgmt-users.properties
+  - name: copy mgmt user files to dest2
+    copy:
+      src: mgmt-users.properties
+      dest: /opt/wildfly/domain/configuration/mgmt-users.properties
+  - name: copy mgmt user files to dest1
+    copy:
+      src: mgmt-group.properties
+      dest: /opt/wildfly/standalone/configuration/mgmt-groups.properties
+  - name: copy mgmt group files to dest2
+    copy:
+      src: mgmt-group.properties
+      dest: /opt/wildfly/domain/configuration/mgmt-users.properties
+  - name: copy console config file to dest
+    copy:
+      src: wildfly.conf
+      dest: /etc/wildfly/wildfly.conf
+  - name: copy console launch file to dest
+    copy:
+      src: launch.sh/
+      dest: /opt/wildfly/bin/launch.sh
+  - name: wildfly restart
+    systemd:
+      name: wildfly
+      state: restarted
+  - name: copy console service file to dest
+    copy:
+      src: wildfly.service/
+      dest: /etc/systemd/system/wildfly.service
+  - name: make console run directory
+    file:
+      name: /var/run/wildfly/
+      state: directory
+  - name: change permissions to console dir
+    file:
+      dest: /var/run/wildfly/
+      recurse: yes
+      owner: wildfly
+      group: wildfly
+      state: directory
+  - name: restart wildfly.service
+    systemd:
+      name: "{{ wildfly_service_name }}"
+      daemon_reload: yes
+      state: restarted

@@ -1,0 +1,23 @@
+---
+- name: installing Haproxy on ubuntu
+  hosts: all
+  become: yes
+  tasks:
+  - name: install Haproxy
+    apt:
+      name: haproxy
+      update_cache: yes
+      state: present
+  - name: backup config files
+    copy:
+      src: /etc/haproxy/haproxy.cfg
+      dest: /etc/haproxy/haproxy.cfg.bk
+      remote_src: yes
+  - name: modify config files
+    copy:
+      src: /home/devops/haproxy.cfg/
+      dest: /etc/haproxy/haproxy.cfg
+  - name: restart haproxy
+    systemd: 
+      name: haproxy
+      state: restarted 

@@ -1,0 +1,2 @@
+172.31.34.89 java_package_name="openjdk-{{ version }}-jdk"
+<centos ip>  java_package_name=java-{{ version }}-openjdk-devel

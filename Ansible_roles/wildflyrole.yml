@@ -1,0 +1,6 @@
+---
+- name: wildfly role
+  hosts: all
+  become: yes
+  roles:
+    - wildfly

@@ -1,0 +1,23 @@
+---
+- name: install jenkins 
+  hosts: all
+  become: yes
+  tasks:
+    - name: install java
+      package:
+        name: "{{ java_package_name }}"
+        state: present
+    - name: download war file from web
+      url:
+        src: https://updates.jenkins.io/download/war/2.385/jenkins.war
+        dest: /home/devops/
+    - name: copy jenkins service file
+      copy: 
+        src: jenkins.service
+        dest: /lib/systemd/system/jenkins.service
+    - name: start and enable jenkins
+      systemd:
+        name: jenkins.service
+        enabled: yes
+        state: started        
+    

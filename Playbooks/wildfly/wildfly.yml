@@ -1,0 +1,65 @@
+---
+- name: installing wildfly on ubuntu 20.04
+  hosts: all
+  become: yes
+  tasks:
+  - name: install java 
+    apt:
+      name: openjdk-11-jdk
+      update_cache: yes
+      state: present
+  - name: create a wildfly group
+    group:
+      name: wildfly
+      state: present
+  - name: create a wildfly user
+    user:
+      name: wildfly
+      create_home: yes
+      group: wildfly
+      home: /opt/wildfly
+      shell: /sbin/nologin
+      state: present
+  - name: extract wildfly 27.1 
+    unarchive: 
+      src: https://github.com/wildfly/wildfly/releases/download/27.0.1.Final/wildfly-27.0.1.Final.tar.gz
+      remote_src: yes
+      dest: /opt/wildfly
+  - name: change permissions
+    file:
+      dest: /opt/wildfly
+      recurse: yes
+      owner: wildfly
+      group: wildfly
+      state: directory
+  - name: make directory
+    file: 
+      name: /etc/wildfly
+      state: directory
+  - name: copy config files
+    copy:
+      src: /opt/wildfly/docs/contrib/scripts/systemd/wildfly.conf
+      dest: /etc/wildfly
+      owner: wildfly
+      group: wildfly
+  - name: copy launch file
+    copy:
+      src: /opt/wildfly/docs/contrib/scripts/systemd/launch.sh
+      dest: /opt/wildfly/bin
+      owner: wildfly
+      group: wildfly
+  - name: add executable permissions for shell files
+    command: sudo sh -c 'chmod +x /opt/wildfly/bin/*.sh'
+  - name: copy systemd unit file 
+    copy:
+      src: wildfly.service
+      dest: /etc/systemd/system/
+      owner: wildfly
+      group: wildfly
+  - name: daemon reload and start wildfly
+    systemd:
+      name: wildfly.service
+      daemon_reload: yes
+      enabled: yes
+      state: started
+     

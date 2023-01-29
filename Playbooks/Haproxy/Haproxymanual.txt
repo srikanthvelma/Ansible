@@ -1,0 +1,13 @@
+#HAproxy
+
+sudo apt update
+sudo apt install -y haproxy
+sudo systemctl status haproxy
+haproxy -v
+sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bk
+sudo nano /etc/haproxy/haproxy.cfg                             ## change ip address of apache servers
+sudo systemctl stop apache2
+sudo systemctl restart haproxy
+sudo nano /etc/apache2/ports.conf
+sudo nano /etc/apache2/sites-available/000-default.conf
+sudo systemctl restart apache2

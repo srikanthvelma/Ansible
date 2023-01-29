@@ -1,0 +1,90 @@
+---
+- name: Installing tomcat 9
+  hosts: all
+  become: yes
+  tasks:
+    - name: install openjdk 11
+      apt:
+        name: "{{ java_package }}"
+        update_cache: yes
+        state: present
+    - name: Ensure the group tomcat exists
+      group:
+        name: "{{ tomcat_group }}"
+        state: present
+    - name: Ensure tomcat home directory exists
+      file:
+        path: "{{ tomcat_home_dir }}"
+        state: directory
+    - name: Ensure the user tomcat exists
+      user:
+        name: "{{ tomcat_user }}" 
+        group: "{{ tomcat_group }}"
+        home: "{{ tomcat_home_dir }}"
+        shell: "{{ tomcat_shell }}"
+    - name: download tomcat
+      get_url:
+        url: "{{ tomcat_download_url }}"
+        dest: "{{ tomcat_download_dest }}"
+    - name: Check if the tomcat is extracted
+      stat:
+        path: "{{ tomcat_check_dir }}"
+      register: tomcat_conf
+    - name: untar the tomcat
+      command: "tar xzvf {{ tomcat_download_dest }} -C {{ tomcat_home_dir }} --strip-components=1"
+      when: not tomcat_conf.stat.exists
+    - name: update group permissions for tomcat dir
+      file:
+        path: "{{ tomcat_home_dir }}"
+        group: "{{ tomcat_group }}"
+        owner: "{{ tomcat_group }}"
+        recurse: yes
+        state: directory
+    - name: update group permissions for tomcat conf directory
+      file:
+        path: "{{ tomcat_check_dir }}" 
+        mode: u=rwx,g=rx
+        state: directory
+    - name: update recursive ownership for tomcat
+      file:
+        path: "{{ item }}"
+        recurse: true
+        group: "{{ tomcat_group }}"
+        owner: "{{ tomcat_group }}"
+        state: directory
+      loop: "{{ tomcat_directories_for_group_permissions }}"
+    - name: copy the tomcat service
+      template:
+        src: tomcat.service.j2
+        dest: "{{ tomcat_service_file }}"
+      notify:
+        - reload daemon
+    - name: enable and start tomcat service
+      service: 
+        name: tomcat.service
+        enabled: yes
+        state: started
+    - name: copy the tomcat users file
+      template:
+        src: tomcat-users.xml.j2
+        dest: "{{ tomcat_users_xml }}"
+      notify:
+        - restart tomcat
+    - name: copy the context file
+      copy:
+        src: context.xml
+        dest: "{{ tomcat_manager_context }}"
+      notify:
+        - restart tomcat
+  handlers:
+    - name: reload daemon
+      systemd:
+        name: tomcat.service
+        daemon_reload: yes
+        state: started
+    - name: restart tomcat
+      service: 
+        name: tomcat.service
+        state: restarted
+
+

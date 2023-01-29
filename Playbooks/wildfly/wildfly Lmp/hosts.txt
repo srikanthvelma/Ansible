@@ -1,0 +1,7 @@
+[servers]
+172.31.33.89 apache_package_name=apache2 service_name=apache2 java_package_name=openjdk-11-jdk
+172.31.9.70 apache_package_name=httpd service_name=httpd java_package_name=java-11-openjdk-devel
+
+[servers:vars]
+php_package_name=php
+phpmysql_package_name=php-mysql

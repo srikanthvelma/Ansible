@@ -1,0 +1,32 @@
+
+---
+- name: install lamp stack on ubuntu
+  hosts: all
+  become: yes
+  tasks:
+    - name: install apache packages
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - "{{ apache_package_name }}"
+        - "{{ php_package_name }}"
+        - "{{ phpmysql_package_name }}"
+      notify:
+        - enable and start service
+    - name: create a file with content
+      copy:
+        src: info.php
+        dest: /var/www/html/info.php
+      notify: 
+        - restart service
+  handlers:
+    - name: enable and start service
+      systemd:
+        name: "{{ service_name }}"
+        enabled: yes
+        state: started
+    - name: restart service
+      systemd:
+        name: "{{ service_name }}"
+        state: restarted

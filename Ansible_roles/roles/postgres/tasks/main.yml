@@ -1,0 +1,9 @@
+---
+# tasks file for skeleton
+- name: install postgres
+  apt: 
+    name: "{{ package }}"
+    update_cache: yes
+    state: present
+  notify: 
+    - start service

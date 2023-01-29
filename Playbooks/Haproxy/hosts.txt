@@ -1,0 +1,13 @@
+[haproxy]
+<private ip ubuntu>
+<private ip centos>
+
+[webservers]
+<ip 1> item_src=/index1.html
+<ip 2> item_src=/index2.html
+
+[haproxy:vars]
+haproxy_package_name=haproxy
+
+[webservers:vars]
+item_dest=/var/www/html/index.html

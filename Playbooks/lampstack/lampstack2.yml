@@ -1,0 +1,30 @@
+---
+- name: install lamp stack on ubuntu
+  hosts: all
+  become: yes
+  tasks: 
+    - name: install apache2
+      apt:
+        name: apache2
+        update_cache: yes
+        state: present
+    - name: install php
+      ansible.builtin.apt:
+        name: php
+        state: present
+    - name: install libapache2-mod-php
+      ansible.builtin.apt:
+        name: libapache2-mod-php
+        state: present
+    - name: install php-mysql
+      ansible.builtin.apt:
+        name: php-mysql
+        state: present
+    - name: create a file with content
+      copy:
+        dest: /var/www/html/info.php
+        content:
+          <?php
+           phpinfo()
+          ?>
+              

@@ -1,0 +1,11 @@
+---
+- name: java installation for multi version
+  hosts: all
+  become: yes
+  vars:
+    version: 11
+  tasks:
+    - name: java installation
+      package:
+        name: "{{ java_package_name }}"
+        state: present
