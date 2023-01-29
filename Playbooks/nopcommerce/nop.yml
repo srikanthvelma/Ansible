@@ -20,20 +20,20 @@
         state: present
     - name: set a password for root accounts
       community.mysql.mysql_user:
-        login_host: localhost
         login_user: root
         login_password: admin123
+        host_all: yes
         name: root
         password: admin123
         state: present 
     - name: remove anonymus users
       community.mysql.mysql_user:
-        name: ''
-        host: localhost
         login_user: root
         login_password: admin123
+        host_all: yes
+        name: ''
         state: absent
-    - name: remove root users
+    - name: disable remote root login
       community.mysql.mysql_user:
         name: root
         host: localhost
@@ -46,4 +46,5 @@
         state: absent
         login_user: root
         login_password: admin123
+        
         
