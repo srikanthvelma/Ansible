@@ -38,6 +38,8 @@
         name: root
         host: localhost
         state: absent
+        login_user: root
+        login_password: admin123
     - name: remove test db
       community.mysql.mysql_db:
         name: test
