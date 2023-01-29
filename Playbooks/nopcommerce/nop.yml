@@ -26,7 +26,7 @@
       community.mysql.mysql_user:
         login_user: root
         login_password: ""
-        host_all: yes
+        host: localhost
         name: root
         password: admin123
         priv: '*.*:ALL,GRANT'
