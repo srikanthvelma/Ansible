@@ -13,6 +13,10 @@
           - aspnetcore-runtime-7.0
         update_cache: yes
         state: present
+    - name: pippymysql
+      pip:
+        name: pymysql
+        state: present
     - name: set a password for root accounts
       community.mysql.mysql_user:
         login_host: localhost
