@@ -18,6 +18,10 @@
       pip:
         name: pymysql
         state: present
+    - name: install mysql server
+      apt:
+        name: mysql_server
+        state: present    
     - name: set a password for root accounts
       community.mysql.mysql_user:
         login_user: root
