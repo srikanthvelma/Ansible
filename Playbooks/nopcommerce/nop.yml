@@ -1,0 +1,13 @@
+---
+- name: installation and config nopcommerce application
+  hosts: all
+  become: yes
+  tasks:
+    - name: install MS keys and packages
+      apt:
+        deb: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+    - name: install deb packages
+      dpkg:
+        name: packages-microsoft-prod.deb
+        state: present
+        
