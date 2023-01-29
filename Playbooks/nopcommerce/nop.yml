@@ -21,7 +21,7 @@
     - name: set a password for root accounts
       community.mysql.mysql_user:
         login_user: root
-        login_password: admin123
+        login_password: root
         host_all: yes
         name: root
         password: admin123
@@ -46,5 +46,5 @@
         state: absent
         login_user: root
         login_password: admin123
-        
+
         
