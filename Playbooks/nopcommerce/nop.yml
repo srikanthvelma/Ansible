@@ -25,6 +25,7 @@
         host_all: yes
         name: root
         password: admin123
+        priv: '*.*:ALL'
         state: present 
     - name: remove anonymus users
       community.mysql.mysql_user:
