@@ -11,10 +11,11 @@
         update_cache: yes
         state: present
       when: ansible_facts['distribution'] == 'Ubuntu'
-    - name: download rom package
+    - name: download rpm package
       get_url:
         url: https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
         dest: /tmp/packages-microsoft-prod.rpm
+      when: ansible_facts['distribution'] == 'CentOS'
     - name: add microsoft packages on centos
       yum: 
         name: /tmp/packages-microsoft-prod.rpm
