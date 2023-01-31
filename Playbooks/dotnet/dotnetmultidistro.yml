@@ -13,7 +13,7 @@
       when: ansible_facts['distribution'] == 'Ubuntu'
     - name: install microsoft packages on ubuntu
       apt: 
-        name: packages-microsoft-prod
+        name: packages_microsoft_com_config_ubuntu_20_04_packages_microsoft_prod_debpackages-microsoft-prod
         update_cache: yes
         state: present
       when: ansible_facts['distribution'] == 'Ubuntu'
