@@ -1,0 +1,6 @@
+---
+# tasks file for skeleton
+- name: java installation
+  package:
+    name: "{{ java_package_name }}"
+    state: present
