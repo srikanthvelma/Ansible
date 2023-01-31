@@ -1,5 +1,0 @@
-hi,
-
-testing first text file for git 
-
-testing file and again after chaNGES

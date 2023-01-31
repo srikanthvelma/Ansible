@@ -1,6 +1,0 @@
----
-- hosts: builders
-  user: ansible
-  roles:
-  - common
-  - builder

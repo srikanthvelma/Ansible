@@ -1,3 +1,0 @@
----
-- include: playbooks/groups/database.yaml
-- include: playbooks/groups/webserver.yaml

@@ -1,6 +1,0 @@
----
-- hosts: web
-  user: ansible
-  become: True
-  roles:
-  - geerlingguy.apache

@@ -1,6 +1,0 @@
----
-java_package: java-11-openjdk
-apache_package: httpd
-php_packages:
-  - php
-  - php-fpm

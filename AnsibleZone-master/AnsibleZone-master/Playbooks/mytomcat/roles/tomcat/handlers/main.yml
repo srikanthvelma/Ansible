@@ -1,5 +1,0 @@
----
-# handlers file for tomcat
-- service:
-    name: tomcat
-    state: started

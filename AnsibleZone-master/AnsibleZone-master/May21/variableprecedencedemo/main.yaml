@@ -1,5 +1,0 @@
----
-- name: understanding variable precedence
-  hosts: all
-  roles:
-    - learning

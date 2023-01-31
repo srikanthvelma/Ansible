@@ -1,7 +1,0 @@
----
-package_name: apache2
-
-utilities:
-- git
-- tree
-- nano

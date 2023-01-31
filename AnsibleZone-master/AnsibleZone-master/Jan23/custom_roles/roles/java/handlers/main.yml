@@ -1,5 +1,0 @@
----
-# handlers file for skeleton
-- name: installed java
-  debug:
-    msg: java is installed

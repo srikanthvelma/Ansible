@@ -1,5 +1,0 @@
----
-- hosts: database
-  user: ansible
-  roles:
-  - common

@@ -1,8 +1,0 @@
----
-- hosts: all
-  remote_user: fale
-  tasks:
-  - name: Print variable 'name'
-    debug:
-      msg: '{{ name }}'
-    

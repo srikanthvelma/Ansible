@@ -1,6 +1,0 @@
----
-- hosts: web
-  user: ansible
-  roles:
-  - common
-  - webserver

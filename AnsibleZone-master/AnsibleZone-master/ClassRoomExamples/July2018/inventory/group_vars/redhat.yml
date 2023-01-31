@@ -1,5 +1,0 @@
----
-pack_name: httpd
-php_packages:
-- php
-- php-mysql
