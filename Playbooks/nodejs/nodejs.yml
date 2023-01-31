@@ -3,7 +3,7 @@
   hosts: all
   become: yes
   vars:
-    version: "18"
+    version: "16"
   tasks:
     - name: to download and run nodejs shell ubuntu
       shell: "curl -sL https://deb.nodesource.com/setup_{{ version }}.x | sudo -E bash -"
