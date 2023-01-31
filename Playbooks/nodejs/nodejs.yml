@@ -1,0 +1,23 @@
+---
+- name: nodejs installation for multi version
+  hosts: all
+  become: yes
+  vars:
+    version: "18"
+  tasks:
+    - name: download node source script
+      get_url:
+        url: "https://deb.nodesource.com/setup_{{ version }}.x"
+        dest: "/tmp/setup_{{ version }}.x.sh"
+      when: ansible_facts['distribution'] == 'Ubuntu'
+    - name: download node source script
+      get_url:
+        url: "https://rpm.nodesource.com/setup_{{ version }}.x"
+        dest: "/tmp/setup_{{ version }}.x.sh"
+      when: ansible_facts['distribution'] == 'CentOS'
+    - name: install node source script
+      shell: "/tmp/setup_{{ version }}.x.sh"
+    - name: install nodejs
+      package:
+        name: nodejs
+        state: present

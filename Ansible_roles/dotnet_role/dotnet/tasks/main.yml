@@ -1,0 +1,23 @@
+---
+# tasks file for skeleton
+- name: install apt-transport-https on ubuntu
+  apt:
+    name: apt-transport-https
+    update_cache: yes
+    state: present
+  when: ansible_facts['distribution'] == 'Ubuntu'
+- name: download rpm package
+  get_url:
+    url: "https://packages.microsoft.com/config/centos/{{ versoin }}/packages-microsoft-prod.rpm"
+    dest: /tmp/packages-microsoft-prod.rpm
+  when: ansible_facts['distribution'] == 'CentOS'
+- name: add microsoft packages on centos
+  yum: 
+    name: /tmp/packages-microsoft-prod.rpm
+    update_cache: yes
+    state: present
+  when: ansible_facts['distribution'] == 'CentOS'
+- name: install dotnet core
+  package:
+    name: "dotnet-sdk-{{ version }}"
+    state: present

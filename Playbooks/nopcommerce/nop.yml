@@ -23,12 +23,12 @@
         name: mysql-server
         state: present    
     - name: set a password for root accounts
-      community.mysql.mysql_user:
+      copy:
         login_user: root
-        login_password: ""
+        login_password:
         host: localhost
         name: root
-        password: admin123
+        password: Admin@123
         priv: '*.*:ALL,GRANT'
         state: present 
     - name: remove anonymus users

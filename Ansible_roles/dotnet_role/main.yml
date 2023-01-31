@@ -1,0 +1,6 @@
+---
+- name: dotnet installation for multi version
+  hosts: all
+  become: yes
+  roles:
+    - dotnet
