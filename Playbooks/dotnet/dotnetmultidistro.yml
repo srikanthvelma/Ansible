@@ -8,6 +8,7 @@
     - name: add microsoft packages on ubuntu
       apt: 
         deb: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+        dpkg_options: 'force-confdef,force-confold'
       when: ansible_facts['distribution'] == 'Ubuntu'
     - name: add microsoft packages on centos
       yum_repository: 
