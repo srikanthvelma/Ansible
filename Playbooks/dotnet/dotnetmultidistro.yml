@@ -17,7 +17,7 @@
         dest: /tmp/packages-microsoft-prod.rpm
     - name: add microsoft packages on centos
       yum: 
-        name: packages-microsoft-prod.rpm
+        name: /tmp/packages-microsoft-prod.rpm
         update_cache: yes
         state: present
       when: ansible_facts['distribution'] == 'CentOS'
