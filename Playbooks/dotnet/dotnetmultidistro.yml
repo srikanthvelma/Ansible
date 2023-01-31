@@ -16,6 +16,8 @@
         name: rpm
         description: rpm repo
         baseurl: https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
+        mirrorlist: https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm/repodata/repomd.xml
+        state: present
       when: ansible_facts['distribution'] == 'CentOS'
     - name: install dotnet core
       package:
