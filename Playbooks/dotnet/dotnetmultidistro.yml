@@ -6,9 +6,16 @@
     version: "7.0"
   tasks:
     - name: add microsoft packages on ubuntu
+      apt_repository:
+        repo: deb https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+        state: present
+        filename: packages-microsoft-prod
+      when: ansible_facts['distribution'] == 'Ubuntu'
+    - name: install microsoft packages on ubuntu
       apt: 
-        deb: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
-        dpkg_options: 'force-confdef,force-confold'
+        name: packages-microsoft-prod
+        update_cache: yes
+        state: present
       when: ansible_facts['distribution'] == 'Ubuntu'
     - name: add microsoft packages on centos
       yum_repository: 
