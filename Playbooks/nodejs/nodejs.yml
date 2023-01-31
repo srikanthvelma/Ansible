@@ -5,18 +5,12 @@
   vars:
     version: "18"
   tasks:
-    - name: download node source script
-      get_url:
-        url: "https://deb.nodesource.com/setup_{{ version }}.x"
-        dest: "/tmp/setup_{{ version }}.x.sh"
+    - name: to download and run nodejs shell ubuntu
+      shell: "curl -sL https://deb.nodesource.com/setup_{{ version }}.x | sudo -E bash -"
       when: ansible_facts['distribution'] == 'Ubuntu'
-    - name: download node source script
-      get_url:
-        url: "https://rpm.nodesource.com/setup_{{ version }}.x"
-        dest: "/tmp/setup_{{ version }}.x.sh"
+    - name: to download and run nodejs shell on centos 
+      shell: "curl -sL https://rpm.nodesource.com/setup_{{ version }}.x | sudo bash -"
       when: ansible_facts['distribution'] == 'CentOS'
-    - name: install node source script
-      shell: "/tmp/setup_{{ version }}.x.sh"
     - name: install nodejs
       package:
         name: nodejs
