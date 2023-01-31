@@ -10,7 +10,7 @@
         name: apt-transport-https
         update_cache: yes
         state: present 
-    - name: install dotnet core
+    - name: install dotnet sdk
       apt:
         name: "dotnet-sdk-{{ version }}"
         update_cache: yes
