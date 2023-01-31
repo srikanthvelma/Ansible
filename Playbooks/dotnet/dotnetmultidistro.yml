@@ -6,9 +6,8 @@
     version: "7.0"
   tasks:
     - name: add microsoft packages on ubuntu
-      apt_repository: 
-        repo: deb https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
-        state: present
+      apt: 
+        deb: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
       when: ansible_facts['distribution'] == 'Ubuntu'
     - name: add microsoft packages on centos
       yum_repository: 
