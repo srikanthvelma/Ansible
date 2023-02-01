@@ -1,0 +1,15 @@
+---
+# tasks file for skeleton
+- name: installing nginx 
+  apt: 
+    name: nginx
+    update_cache: yes
+    state: present
+- name: start nginx
+  systemd:
+    name: nginx
+    state: started
+- name: copy site default file
+  copy:
+    src: ~/default
+    dest: /etc/nginx/sites-available/default

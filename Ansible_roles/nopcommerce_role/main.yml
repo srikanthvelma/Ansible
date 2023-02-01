@@ -1,0 +1,16 @@
+---
+- name: install and config nopcommerce thru roles
+  hosts: appserver
+  become: yes
+  roles:
+    - nopCommerce
+- name: install mysqldb
+  hosts: dbserver
+  become: yes
+  roles:
+    - geerlingguy.mysql
+- name: install nginx
+  hosts: webserver
+  become: yes
+  roles:
+    - nginx
