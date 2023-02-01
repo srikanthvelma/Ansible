@@ -11,45 +11,43 @@
         name:
           - apt-transport-https
           - aspnetcore-runtime-7.0
-          - python3-pip
         update_cache: yes
         state: present
-    - name: pippymysql
-      pip:
-        name: pymysql
-        state: present
-    - name: install mysql server
-      apt:
-        name: mysql-server
-        state: present    
-    - name: set a password for root accounts
+    - name: create nopcommerce directory
+      file:
+        path: /var/www/nopCommerce
+        state: directory
+    - name: download and nopcommerce
+      get_url:
+        url: https://github.com/nopSolutions/nopCommerce/releases/download/release-4.60.1/nopCommerce_4.60.1_NoSource_linux_x64.zip
+        dest: /tmp
+    - name: unzip nopcommerce
+      unarchive:
+        src: /tmp/nopCommerce_4.60.1_NoSource_linux_x64.zip
+        dest: /tmp
+        remore_src: yes
+    - name: create bin and logs directory
+      file:
+        path:
+          - bin
+          - logs
+        state: directory
+    - name: change file permissions
+      file: 
+        dest: ~/var/www/nopCommerce
+        recurse: yes
+        group: www-data
+        owner: www-data
+        state: directory
+    - name: copy nopcommerce service file
       copy:
-        login_user: root
-        login_password:
-        host: localhost
-        name: root
-        password: Admin@123
-        priv: '*.*:ALL,GRANT'
-        state: present 
-    - name: remove anonymus users
-      community.mysql.mysql_user:
-        login_user: root
-        login_password: admin123
-        host_all: yes
-        name: ''
-        state: absent
-    - name: disable remote root login
-      community.mysql.mysql_user:
-        name: root
-        host: localhost
-        state: absent
-        login_user: root
-        login_password: admin123
-    - name: remove test db
-      community.mysql.mysql_db:
-        name: test
-        state: absent
-        login_user: root
-        login_password: admin123
+        src: ~/nopCommerce.service
+        dest: /etc/systemd/system/nopCommerce.service
+    - name: start nopcommerce service
+      systemd:
+        name: nopcommerce
+        state: started
+
+
 
         
