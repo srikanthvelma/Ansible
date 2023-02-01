@@ -49,7 +49,7 @@
         dest: /etc/systemd/system/nopCommerce.service
     - name: start nopcommerce service
       systemd:
-        name: nopcommerce
+        name: nopCommerce
         state: started
 
 
