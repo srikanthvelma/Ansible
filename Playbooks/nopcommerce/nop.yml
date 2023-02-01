@@ -45,7 +45,7 @@
         state: directory
     - name: copy nopcommerce service file
       copy:
-        src: ~/nopCommerce.service
+        src: home/devops/nopCommerce.service
         dest: /etc/systemd/system/nopCommerce.service
     - name: start nopcommerce service
       systemd:
