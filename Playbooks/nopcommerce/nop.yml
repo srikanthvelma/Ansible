@@ -3,15 +3,15 @@
   hosts: all
   become: yes
   tasks:
-    - name: install MS keys and packages
+    - name: downloading MS keys and packages
       get_url:
         url: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
         dest: /tmp
-    - name: install packages
+    - name: installing packages
       apt:
         deb: /tmp/packages-microsoft-prod.deb 
         state: present
-    - name: install aspdotnet
+    - name: install aspnetcore
       apt:
         name:
           - apt-transport-https
@@ -22,7 +22,7 @@
       file:
         path: /var/www/nopCommerce
         state: directory
-    - name: download and nopcommerce
+    - name: download nopcommerce
       get_url:
         url: https://github.com/nopSolutions/nopCommerce/releases/download/release-4.60.1/nopCommerce_4.60.1_NoSource_linux_x64.zip
         dest: /tmp
