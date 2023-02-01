@@ -33,7 +33,7 @@
     - name: unzip nopcommerce
       unarchive:
         src: /tmp/nopCommerce_4.60.1_NoSource_linux_x64.zip
-        dest: /tmp
+        dest: /var/www/nopCommerce/
         remote_src: yes
     - name: create bin and logs directory
       file:
