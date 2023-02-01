@@ -1,0 +1,6 @@
+---
+- name: nodejs installation for multi distribution
+  hosts: all
+  become: yes
+  vars:
+    - nodejs

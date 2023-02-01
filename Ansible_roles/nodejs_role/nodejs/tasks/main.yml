@@ -1,2 +1,12 @@
 ---
 # tasks file for skeleton
+- name: to download and run nodejs shell ubuntu
+  shell: "curl -sL https://deb.nodesource.com/setup_{{ version }}.x | sudo -E bash -"
+  when: ansible_facts['distribution'] == 'Ubuntu'
+- name: to download and run nodejs shell on centos 
+  shell: "curl -sL https://rpm.nodesource.com/setup_{{ version }}.x | sudo bash -"
+  when: ansible_facts['distribution'] == 'CentOS'
+- name: install nodejs
+  package:
+    name: nodejs
+    state: present
