@@ -9,7 +9,7 @@
         dest: /tmp
     - name: install packages
       apt:
-        name: packages-microsoft-prod.deb 
+        name: /tmp/packages-microsoft-prod.deb 
         state: present
     - name: install aspdotnet
       apt:
