@@ -45,7 +45,7 @@
         state: directory
     - name: copy nopcommerce service file
       copy:
-        src: home/devops/nopCommerce.service
+        src: home/devops/Ansible/Playbooks/nopCommerce.service
         dest: /etc/systemd/system/nopCommerce.service
     - name: start nopcommerce service
       systemd:
