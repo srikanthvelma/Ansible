@@ -33,7 +33,7 @@
 - name: create a symbolic link
   ansible.builtin.file:
     src: "{{ user_home }}/apache-tomcat-{{ tomcat_version }}"
-    dest: "{{ user_home }}/"
+    dest: "{{ user_home }}"
     state: link
   notify:
     - add execute permissions to shell files
