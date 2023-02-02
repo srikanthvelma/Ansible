@@ -30,11 +30,11 @@
     remote_src: yes
     dest: /tmp
   when: not tomcat_startup.stat.exists
-- name: create a symbolic link
+- name: copy tomcat folder
   ansible.builtin.copy:
     src: "/tmp/apache-tomcat-{{ tomcat_version }}/"
     dest: "{{ user_name }}/tomcat/"
-    remote_src: present
+    remote_src: yes
   notify:
     - add execute permissions to shell files
 - name: Create a systemd unit file
