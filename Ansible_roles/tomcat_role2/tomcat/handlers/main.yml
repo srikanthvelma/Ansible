@@ -7,6 +7,8 @@
 - name: enable and reload tomcat
   ansible.builtin.systemd:
     name: "{{ tomcat_service_name }}"
+    daemon-reload: yes
+    enabled: yes
     state: restarted
 - name: add execute permissions to shell files
   ansible.builtin.command: "sudo sh -c 'chmod +x {{ user_home }}/latest/bin/*.sh'"
