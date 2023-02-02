@@ -26,7 +26,7 @@
   register: tomcat_startup
 - name: extract tomcat
   ansible.builtin.unarchive:
-    src: "https://www-eu.apache.org/dist/tomcat/tomcat-{{ tomcat_major_version }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    src: "https://dlcdn.apache.org/tomcat/tomcat-{{ tomcat_major_version }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
     remote_src: yes
     dest: "{{ user_home }}"
   when: not tomcat_startup.stat.exists

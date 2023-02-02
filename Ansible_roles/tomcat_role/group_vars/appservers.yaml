@@ -3,7 +3,7 @@ user_name: tomcat
 group_name: tomcat
 user_home: /opt/tomcat
 user_shell: /bin/false
-tomcat_version: "10.1.4"
+tomcat_version: "10.1.5"
 tomcat_major_version: "10"
 tomcat_service_name: tomcat.service
 tomcat_mgmt_user_name: admin
