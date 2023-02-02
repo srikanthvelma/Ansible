@@ -28,13 +28,12 @@
   ansible.builtin.unarchive:
     src: "https://dlcdn.apache.org/tomcat/tomcat-{{ tomcat_major_version }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
     remote_src: yes
-    dest: "{{ user_home }}"
+    dest: /tmp
   when: not tomcat_startup.stat.exists
 - name: create a symbolic link
-  ansible.builtin.file:
-    src: "{{ user_home }}/apache-tomcat-{{ tomcat_version }}"
-    dest: "{{ user_home }}"
-    state: link
+  ansible.builtin.copy:
+    src: "/tmp/apache-tomcat-{{ tomcat_version }}/"
+    dest: "{{ user_name }}/tomcat/"
   notify:
     - add execute permissions to shell files
 - name: Create a systemd unit file
