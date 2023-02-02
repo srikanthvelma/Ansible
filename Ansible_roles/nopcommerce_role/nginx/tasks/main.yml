@@ -11,5 +11,5 @@
     state: started
 - name: copy site default file
   copy:
-    src: ~/default
+    src: /home/devops/Ansible/Ansible_roles/nopcommerce_role/nopCommerce/nginx/files/default
     dest: /etc/nginx/sites-available/default
