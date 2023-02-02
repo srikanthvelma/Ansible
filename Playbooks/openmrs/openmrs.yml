@@ -8,4 +8,52 @@
       name: openjdk-8-jdk
       update_cache: yes
       state: present
+  - name: create a tomcat group
+    group:
+      name: tomcat
+      system: yes
+      state: present
+  - name: create a wildfly user
+    user:
+      name: tomcat
+      create_home: yes
+      group: tomcat
+      system: yes
+      home: /opt/tomcat      
+      shell: /bin/nologin
+      state: present
+  - name: extract tomcat 7
+    unarchive:
+      src: https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.109/bin/apache-tomcat-7.0.109.tar.gz
+      dest: /tmp
+      remote_src: yes
+  - name: copy tar file to folder
+    copy:
+      src: /tmp/apache-tomcat-7.0.109/
+      dest: /opt/wildfly
+      remote_src: yes
+  - name: change home dir permissions
+    file:
+      dest: /opt/tomcat
+      recurse: yes
+      owner: tomcat
+      group: tomcat
+      state: directory
+  - name: change conf webapps 
+    file:
+      path: conf
+      recurse: yes
+      group: tomcat
+      mode: g+r,g+x
+  - name: change permissions for webapps work temp logs folders
+    file:
+      path: 
+        - webapps/
+        - work/
+        - temp/
+        - logs
+      recurse: yes
+      user: tomcat
+      group: tomcat
+    
   
