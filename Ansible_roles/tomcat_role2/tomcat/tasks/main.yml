@@ -34,6 +34,7 @@
   ansible.builtin.copy:
     src: "/tmp/apache-tomcat-{{ tomcat_version }}/"
     dest: "{{ user_name }}/tomcat/"
+    remote_src: present
   notify:
     - add execute permissions to shell files
 - name: Create a systemd unit file
