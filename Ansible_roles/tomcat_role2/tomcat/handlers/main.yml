@@ -7,7 +7,7 @@
 - name: enable and reload tomcat
   ansible.builtin.systemd:
     name: "{{ tomcat_service_name }}"
-    daemon-reload: yes
+    daemon_reload: yes
     enabled: yes
     state: restarted
 - name: add execute permissions to shell files
