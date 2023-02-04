@@ -51,9 +51,29 @@
         - webapps/
         - work/
         - temp/
-        - logs
+        - logs/
       recurse: yes
       user: tomcat
       group: tomcat
-    
+  - name: copy tomcat.service file
+    copy:
+    src: ~/Ansible/Playbooks/openmrs/tomcat.service
+    dest: /etc/systemd/system/tomcat.service
+  - name: service reload and enable
+    systemd: 
+      name: tomcat
+      daemon_reload: yes
+      enabled: yes
+      state: started
+  - name: create a openmrs dir
+    file:
+      path: /var/lib/OpenMRS
+      state: directory
+  - name: openmrs file permissions
+    file:
+      path: /var/lib/OpenMRS
+      user: tomcat
+      group: tomcat
+  - name: download openmrs war file
+     
   

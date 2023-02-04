@@ -1,4 +1,3 @@
-
 ---
 - name: installing wildfly on ubuntu 20.04
   hosts: all

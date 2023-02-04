@@ -38,12 +38,12 @@
     - name: create bin and logs directory
       file:
         path:
-          - bin
-          - logs
+          - /var/www/nopCommerce/bin
+          - /var/www/nopCommerce/logs
         state: directory
     - name: change file permissions
       file: 
-        dest: ~/var/www/nopCommerce
+        dest: ~/var/www/nopCommerce/
         recurse: yes
         group: www-data
         owner: www-data
