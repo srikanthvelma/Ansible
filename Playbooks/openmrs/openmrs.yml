@@ -59,6 +59,8 @@
     copy:
       src: ~/Ansible/Playbooks/openmrs/tomcat.service
       dest: /etc/systemd/system/tomcat.service
+      owner: tomcat
+      group: tomcat
   - name: service reload and enable
     systemd: 
       name: tomcat
