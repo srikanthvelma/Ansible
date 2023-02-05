@@ -13,7 +13,7 @@
       name: tomcat
       system: yes
       state: present
-  - name: create a wildfly user
+  - name: create a tomcat user
     user:
       name: tomcat
       create_home: yes
