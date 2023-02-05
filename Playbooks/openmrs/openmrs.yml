@@ -30,7 +30,7 @@
   - name: copy tar file to folder
     copy:
       src: /tmp/apache-tomcat-7.0.109/
-      dest: /opt/wildfly
+      dest: /opt/tomcat
       remote_src: yes
   - name: change home dir permissions
     file:
@@ -79,7 +79,7 @@
   - name: download openmrs war file
     get_url:
       url: https://sourceforge.net/projects/openmrs/files/releases/OpenMRS_Platform_2.5.0/openmrs.war
-      dest: /opt/tomcat/webapps/
+      dest: /opt/tomcat/webapps
   - name: file permission for openmrs
     file:
       path: /opt/tomcat/webapps/openmrs.war
