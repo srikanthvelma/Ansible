@@ -74,7 +74,7 @@
   - name: openmrs file permissions
     file:
       path: /var/lib/OpenMRS
-      user: tomcat
+      owner: tomcat
       group: tomcat
   - name: download openmrs war file
     get_url:
@@ -83,6 +83,6 @@
   - name: file permission for openmrs
     file:
       path: /opt/tomcat/webapps/openmrs.war
-      user: tomcat
+      owner: tomcat
       group: tomcat 
   
