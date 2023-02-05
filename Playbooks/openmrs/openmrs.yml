@@ -39,7 +39,7 @@
       owner: tomcat
       group: tomcat
       state: directory
-  - name: change conf webapps 
+  - name: change conf file permissions 
     file:
       path: conf
       recurse: yes
@@ -75,5 +75,12 @@
       user: tomcat
       group: tomcat
   - name: download openmrs war file
-     
+    get_url:
+      url: https://sourceforge.net/projects/openmrs/files/releases/OpenMRS_Platform_2.5.0/openmrs.war
+      dest: /opt/tomcat/webapps/
+  - name: file permission for openmrs
+    file:
+      path: /opt/tomcat/webapps/openmrs.war
+      user: tomcat
+      group: tomcat 
   
