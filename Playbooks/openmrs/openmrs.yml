@@ -53,7 +53,7 @@
         - temp/
         - logs/
       recurse: yes
-      user: tomcat
+      owner: tomcat
       group: tomcat
   - name: copy tomcat.service file
     copy:
