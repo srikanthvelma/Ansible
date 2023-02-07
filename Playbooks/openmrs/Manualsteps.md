@@ -55,4 +55,4 @@ wget https://sourceforge.net/projects/openmrs/files/releases/OpenMRS_Platform_2.
 sudo cp openmrs.war /opt/tomcat/webapps/
 sudo chown -R tomcat:tomcat /opt/tomcat/webapps/openmrs.war
 ```
-![preview](images/openmrsfinal.png) 
+![preview](images/openmrsfinal.png)  
