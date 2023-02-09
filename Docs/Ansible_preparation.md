@@ -1,5 +1,12 @@
 ANSIBLE
 -------
+Confiration Management
+----------------------
+* Configuration management is a process for maintaining computer systems, servers, and software in a desired, consistent state.
+* The role of configuration management is to maintain systems in a desired state. Traditionally, this was handled manually or with custom scripting by system administrators.
+* Automation is the use of software to perform tasks, such as configuration management, in order to reduce cost, complexity, and errors.
+* Through automation, a configuration management tool can provision a new server within minutes with less room for error. You can also use automation to maintain a server in the desired state
+
 Need for Ansible
 ----------------
 * In organization QA Policy ,for every change submitted by a devloper ,we need to run functional test, unit test, performance test, so for this we need application to be up and running, and since we need to do more deployments doing manually is not sensible
@@ -7,6 +14,13 @@ Need for Ansible
 * 2 Automation options
    1. procedural - through scripts (tells each and every step to do)
    2. Declarative - through Ansible ( tells only exact requirement)
+
+Ansible configuration files
+---------------------------
+* config file -`/etc/ansible/ansible.cfg`
+* logs file - 
+* adhoc commands uses -`/usr/bin/ansible`
+* 
 
 Ansible Architecture
 --------------------
@@ -24,6 +38,7 @@ Ansible Architecture
 * Ansible is an open source software developed in python.
 * Ansible expects **python** to be installed on nodes.
 * **Desired state** : what has to be done / requirement
+* ansible configuration
 
 What needs to provided for Ansible
 ----------------------------------
@@ -50,7 +65,7 @@ Installation of Ansible
    python3 install pip3
    python3 -m pip install --user ansible
    ```
-2. for specifi distribution
+2. for specific distribution
    [refer]https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html
    for ubuntu
    ```
@@ -62,6 +77,7 @@ Installation of Ansible
 
 Ansible Play Book
 -----------------
+* **Def**- 
 * We create playbooks in YAML format which is collection of plays.
 * List of modules to perform your automation where we describe the desired state
 * Ensure you have valid manual steps (which are working)
@@ -152,6 +168,28 @@ Playbook stuff
       update_cache: yes
       state: present
   ```
+* **Modules**
+  1. apt
+  2. yum
+  3. file
+  4. user
+  5. group
+  6. copy
+  7. systemd
+  8. get_url
+  9. unarchive
+  10. stat
+  11. package
+  12. template
+  13. debug
+  14. set_fact
+  15. shell
+  16. command
+  17. apt_repository
+  18. yum_repository
+  19. apt_add_key
+  20. setup
+  21. git 
 * **vars** 
 * we can define variables in it ,where we can have chance of repeatability or version change or user and group change, user home ..etc
   ```yaml
@@ -269,8 +307,9 @@ Playbook stuff
   ```
 
 * **Adhoc command** 
-* Adhoc command is a way of running ansible module by constructing command line
+* Adhoc command is a way of running ansible module by constructing command line using `/usr/bin/ansible`
 * We use adhoc commands for activities which donot require automation.
+* `ansible -i hosts -m setup -a "filter=distribution all`
 
 * **conditionals**
 * [refer]https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_conditionals.html
@@ -295,3 +334,171 @@ Playbook stuff
 * Ansible uses jinja2 for templating, In ansible to use the variables we use expression {{ variable_name }} which is derived from templating language jinja2
 * We can use jinja2 in files so that the content can be dynamic
 
+Ansible Roles
+-------------
+* Ansible Roles help in creating re-usable ansible assets
+* Roles let you automatically load related vars, files, tasks, handlers, and other Ansible artifacts based on a known file structure. After you group your content in roles, you can easily reuse them and share them with other users.
+* roles structure
+  ```yaml
+  roles/
+    common/               # this hierarchy represents a "role"
+        tasks/            #
+            main.yml      #  <-- tasks file can include smaller files if warranted
+        handlers/         #
+            main.yml      #  <-- handlers file
+        templates/        #  <-- files for use with the template resource
+            ntp.conf.j2   #  <------- templates end in .j2
+        files/            #
+            bar.txt       #  <-- files for use with the copy resource
+            foo.sh        #  <-- script files for use with the script resource
+        vars/             #
+            main.yml      #  <-- variables associated with this role
+        defaults/         #
+            main.yml      #  <-- default lower priority variables for this role
+        meta/             #
+            main.yml      #  <-- role dependencies
+        library/          # roles can also include custom modules
+        module_utils/     # roles can also include custom module_utils
+        lookup_plugins/   # or other types of plugins, like lookup in this case
+
+    webtier/              # same kind of structure as "common" was above, done for the webtier role
+    monitoring/           # ""
+    fooapp/               # ""
+  ```
+* By default, Ansible looks for roles in the following locations:
+    * in collections, if you are using them
+    * in a directory called roles/, relative to the playbook file
+    * in the configured roles_path. The default search path is ~/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles.
+    * in the directory where the playbook file is located
+
+**Ansible collections**
+* In Ansible the reusable assets are - roles, modules
+* In Ansible we can create custom modules as well by writing python code.
+* Ansible collections are collections of - custom ansible modules & roles  
+
+
+
+Ansible other terms
+-------------------
+* **Ansible Special Variables** - ansible while executing has lot of special variables defined by ansible [refer]https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html
+* Ansible lookups
+* Ansible Configuration file
+* **custom facts**
+* we can define custom facts of our own by using module - `ansible.builtin.set_fact`
+  ```yaml
+  ---
+  - name: setting some fact
+    become: yes
+    hosts: all
+    tasks:
+        - name: set some facts
+        ansible.builtin.set_fact:
+            message: This is from ansible
+            team: devops
+        - name: get the facts
+        ansible.builtin.debug:
+            msg: "The facts are team = {{ team }} message = {{ message }}" 
+  ```
+* dynamic inventory
+* ansible vault
+* **flush handlers**
+* Ansible handlers are executed based on consolidataion of all the tasks in ansible.
+* If you want to execute handlers after some step immedietly we use flush_handlers as mentioned below
+  ```yaml
+  ---
+  - name: flush handlers demo
+    hosts: all
+    tasks:
+    - name: print something
+      ansible.builtin.file:
+        path: "/tmp/handle1"
+        state: touch
+      notify:
+        - handle1
+        - handle2
+    - name: Force all notified handlers to run at this point, not waiting for normal sync points
+      ansible.builtin.meta: flush_handlers
+    - name: print something again
+      ansible.builtin.file:
+        path: "/tmp/handle2"
+        state: touch
+      notify:
+        - handle1
+        - handle2
+    handlers:
+    - name: handle1
+      ansible.builtin.debug:
+        msg: "handle1"
+    - name: handle2
+      ansible.builtin.debug:
+        msg: "handle2"
+
+  ```
+* **parallesim** - **ansible forks**
+* Ansible forks: This represents the number of hosts in which ansible will parallely execute the playbook
+* The default number of forks are 5, This value can be changed while executing ansible command or in the configuration file.
+* If you have the processing power available and want to use more forks, you can set the number in `ansible.cfg:`
+  ```yaml
+  [defaults]
+  forks = 30
+  ```
+* Setting the batch size with **serial**
+* By default, Ansible runs in parallel against all the hosts in the pattern you set in the `hosts:` field of each play. If you want to manage only a few machines at a time, for example during a rolling update, you can define how many hosts Ansible should manage at a single time using the `serial` keyword:  
+  ```yaml
+  ---
+  - name: test play
+  hosts: webservers
+  serial: 3
+  gather_facts: False
+
+  tasks:
+    - name: first task
+      command: hostname
+    - name: second task
+      command: hostname
+  ```
+
+* In the above example, if we had 6 hosts in the group ‘webservers’, Ansible would execute the play completely (both tasks) on 3 of the hosts before moving on to the next 3 hosts:
+  ```yaml
+  PLAY [webservers] ****************************************
+
+    TASK [first task] ****************************************
+    changed: [web3]
+    changed: [web2]
+    changed: [web1]
+
+    TASK [second task] ***************************************
+    changed: [web1]
+    changed: [web2]
+    changed: [web3]
+
+    PLAY [webservers] ****************************************
+
+    TASK [first task] ****************************************
+    changed: [web4]
+    changed: [web5]
+    changed: [web6]
+
+    TASK [second task] ***************************************
+    changed: [web4]
+    changed: [web5]
+    changed: [web6]
+
+    PLAY RECAP ***********************************************
+    web1      : ok=2    changed=2    unreachable=0    failed=0
+    web2      : ok=2    changed=2    unreachable=0    failed=0
+    web3      : ok=2    changed=2    unreachable=0    failed=0
+    web4      : ok=2    changed=2    unreachable=0    failed=0
+    web5      : ok=2    changed=2    unreachable=0    failed=0
+    web6      : ok=2    changed=2    unreachable=0    failed=0
+  ```
+* **tags in ansible**
+* we can apply at different level- for complete playbook level, for 1 tasks, for multiple tasks, at a block level by using block, to roles
+* for more tags details [refer]https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_tags.html#selecting-or-skipping-tags-when-you-run-a-playbook
+
+* gather_facts
+* ansible on windows
+* ansible tower
+* 
+  
+   
