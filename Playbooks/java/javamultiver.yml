@@ -3,7 +3,7 @@
   hosts: all
   become: yes
   vars:
-    version: "13"
+    version: "17"
   tasks:
     - name: java installation
       apt:
