@@ -1,2 +1,1 @@
-172.31.38.235 java_package_name="openjdk-{{ version }}-jdk"
-172.31.33.53 java_package_name="java-{{ version }}-openjdk-devel"
+localhost
